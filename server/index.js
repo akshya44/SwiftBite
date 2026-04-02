@@ -46,12 +46,21 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Start the HTTP server immediately (don't block on DB)
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  connectDB();
-});
+// Start the server or export for Vercel Serverless
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    connectDB();
+  });
+}
+
+// In Vercel, the DB connection needs to trigger when the function wakes up
+if (process.env.NODE_ENV === 'production') {
+  connectDB().catch(console.error);
+}
+
+module.exports = app;
 
 // Connect to MongoDB with in-memory fallback
 async function connectDB() {
