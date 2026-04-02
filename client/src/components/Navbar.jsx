@@ -1,11 +1,13 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useLocation } from '../context/LocationContext';
 import { useState } from 'react';
 
 export default function Navbar() {
   const { user, logout, isAuthenticated } = useAuth();
   const { totalItems } = useCart();
+  const { address, fetchLocation, loading } = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -30,18 +32,61 @@ export default function Navbar() {
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
-          {/* Logo */}
-          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ fontSize: '1.5rem' }}>🔥</span>
-            <span style={{
-              fontFamily: "'Outfit', sans-serif",
-              fontSize: '1.35rem',
-              fontWeight: 800,
-              background: 'linear-gradient(135deg, #f97316, #fbbf24)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}>SwiftBite</span>
-          </Link>
+          {/* Branding & Location container */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
+            {/* Logo */}
+            <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ fontSize: '1.5rem' }}>🔥</span>
+              <span style={{
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: '1.35rem',
+                fontWeight: 800,
+                background: 'linear-gradient(135deg, #f97316, #fbbf24)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}>SwiftBite</span>
+            </Link>
+
+            {/* Location Selector (Zomato/Swiggy style) */}
+            <div 
+              style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', maxWidth: '250px' }}
+              onClick={fetchLocation}
+              title="Click to fetch current location"
+              className="hover:opacity-80 transition-opacity"
+            >
+              <div style={{ 
+                background: 'rgba(249,115,22,0.15)', 
+                borderRadius: '8px', 
+                padding: '0.4rem', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                <span style={{ fontSize: '1.1rem', color: '#f97316' }}>📍</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                 <span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    {loading ? 'Locating...' : 'Deliver To'}
+                 </span>
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                   <span style={{ 
+                     fontSize: '0.9rem', 
+                     color: '#f8fafc', 
+                     fontWeight: 500, 
+                     whiteSpace: 'nowrap', 
+                     overflow: 'hidden', 
+                     textOverflow: 'ellipsis',
+                     maxWidth: '160px',
+                     borderBottom: '1px dashed rgba(249,115,22,0.4)',
+                     paddingBottom: '1px'
+                   }}>
+                     {address}
+                   </span>
+                   <span style={{ fontSize: '0.7rem', color: '#f97316' }}>▼</span>
+                 </div>
+              </div>
+            </div>
+          </div>
 
           {/* Desktop Nav */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>

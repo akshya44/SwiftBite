@@ -31,7 +31,15 @@ export default function Login() {
       login(data, data.token);
       navigate('/restaurants');
     } catch (err) {
-      const msg = err.response?.data?.message || 'Login failed. Please try again.';
+      const status = err.response?.status;
+      let msg;
+      if (!err.response || status === 502 || status === 504) {
+        msg = '⚠️ Cannot reach the server. Make sure the backend is running on port 5000.';
+      } else if (status === 503) {
+        msg = '🔌 Database not connected. Please set MONGO_URI in server/.env and restart the server.';
+      } else {
+        msg = err.response?.data?.message || 'Login failed. Please try again.';
+      }
       setApiError(msg);
     } finally {
       setLoading(false);

@@ -33,8 +33,13 @@ export default function Register() {
       login(data, data.token);
       navigate('/restaurants');
     } catch (err) {
+      const status = err.response?.status;
       const apiErrors = err.response?.data?.errors;
-      if (apiErrors) {
+      if (!err.response || status === 502 || status === 504) {
+        setApiError('⚠️ Cannot reach the server. Make sure the backend is running on port 5000.');
+      } else if (status === 503) {
+        setApiError('🔌 Database not connected. Please set MONGO_URI in server/.env and restart the server.');
+      } else if (apiErrors) {
         const mapped = {};
         apiErrors.forEach((e) => { mapped[e.path] = e.msg; });
         setErrors(mapped);

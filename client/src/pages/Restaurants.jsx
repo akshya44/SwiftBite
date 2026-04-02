@@ -15,7 +15,7 @@ function RestaurantSkeleton() {
   );
 }
 
-const CUISINES = ['All', 'Indian', 'Chinese', 'Italian', 'Mexican', 'Japanese', 'American', 'Thai'];
+const CUISINES = ['All', 'Indian', 'Chinese', 'Italian', 'Mexican', 'Japanese', 'American', 'Thai', 'Dessert'];
 
 export default function Restaurants() {
   const [restaurants, setRestaurants] = useState([]);
