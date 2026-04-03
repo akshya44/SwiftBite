@@ -1,6 +1,6 @@
 # 🔥 SwiftBite — Fast Food Delivery App
 
-A full-stack food delivery web application built with React, Node.js, Express, and MongoDB. Customers can browse restaurants, add items to cart, and place orders. Restaurant owners can manage their menus and update order statuses.
+A full-stack food delivery web application built with React, Node.js, Express, and SQLite. Customers can browse restaurants, add items to cart, and place orders. Restaurant owners can manage their menus and update order statuses.
 
 ---
 
@@ -10,9 +10,9 @@ A full-stack food delivery web application built with React, Node.js, Express, a
 |---|---|
 | **Frontend** | React 18, Vite, React Router v6, Axios, Tailwind CSS |
 | **Backend** | Node.js, Express 5, JWT Auth, bcryptjs, express-validator |
-| **Database** | MongoDB, Mongoose |
+| **Database** | SQLite, better-sqlite3 |
 | **Styling** | Tailwind CSS + Custom CSS Variables |
-| **Deployment** | Render (configured via `render.yaml`) |
+| **Deployment** | Vercel (configured via `vercel.json`) |
 
 ---
 
@@ -29,14 +29,13 @@ SwiftBite/
 │   ├── .env
 │   └── vite.config.js
 ├── server/                  # Node.js + Express backend
+│   ├── database/            # db.js (SQLite setup and queries)
 │   ├── middleware/          # auth.js, validate.js
-│   ├── models/              # User, Restaurant, MenuItem, Order
 │   ├── routes/              # auth.js, restaurants.js, orders.js
 │   ├── index.js
 │   └── .env
 ├── package.json             # Root monorepo scripts
-├── render.yaml              # Render deployment config
-├── Procfile                 # Process config
+├── vercel.json              # Vercel deployment config
 └── README.md
 ```
 
@@ -46,13 +45,12 @@ SwiftBite/
 
 ### Prerequisites
 - Node.js v18+
-- MongoDB (local or [MongoDB Atlas](https://cloud.mongodb.com))
 - npm v9+
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/swiftbite.git
-cd swiftbite
+git clone https://github.com/akshya44/SwiftBite.git
+cd SwiftBite
 ```
 
 ### 2. Set up environment variables
@@ -60,7 +58,6 @@ cd swiftbite
 **Server** (`/server/.env`):
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/swiftbite
 JWT_SECRET=your_super_secret_jwt_key
 NODE_ENV=development
 CLIENT_URL=http://localhost:5173
@@ -91,7 +88,7 @@ npm run server    # Express on :5000
 npm run client    # Vite on :5173
 ```
 
-> The Vite dev server proxies `/api/*` requests to `:5000`, so no CORS issues during development.
+> The backend automatically creates a local SQLite database file (`database.sqlite`) and seeds it with demo data upon startup!
 
 ---
 
@@ -101,7 +98,6 @@ npm run client    # Vite on :5173
 | Variable | Description | Example |
 |---|---|---|
 | `PORT` | Server port | `5000` |
-| `MONGO_URI` | MongoDB connection string | `mongodb://localhost:27017/swiftbite` |
 | `JWT_SECRET` | JWT signing secret | `change_this_in_production` |
 | `NODE_ENV` | Environment | `development` / `production` |
 | `CLIENT_URL` | Frontend URL for CORS | `http://localhost:5173` |
@@ -145,24 +141,17 @@ npm run client    # Vite on :5173
 
 ---
 
-## 🚀 Deployment (Render)
+## 🚀 Deployment (Vercel)
 
-### Option A — Using render.yaml (Automatic)
-1. Push your code to GitHub
-2. Go to [Render Dashboard](https://dashboard.render.com)
-3. Click **New** → **Blueprint** → connect your repo
-4. Render will auto-detect `render.yaml` and set up the service
-5. Fill in secret env vars: `MONGO_URI`, `CLIENT_URL`
+The app is pre-configured to be deployed natively on Vercel via the `vercel.json` file.
 
-### Option B — Manual Steps
-1. **Build command:** `npm install && cd server && npm install && cd ../client && npm install && npm run build`
-2. **Start command:** `node server/index.js`
-3. Set environment variables: `MONGO_URI`, `JWT_SECRET`, `NODE_ENV=production`, `CLIENT_URL`
+1. Push your code to GitHub.
+2. Go to [Vercel Dashboard](https://vercel.com/dashboard) and click **Add New Project**.
+3. Import your GitHub repository.
+4. Add your **Environment Variables** (like `JWT_SECRET`).
+5. Click **Deploy**!
 
-### MongoDB Atlas (Cloud Database)
-1. Create a free cluster at [MongoDB Atlas](https://cloud.mongodb.com)
-2. Whitelist all IPs (`0.0.0.0/0`) for Render
-3. Copy the connection string to `MONGO_URI`
+> **Warning:** To operate smoothly in Vercel's serverless environment, the backend writes the SQLite database to `/tmp/database.sqlite` (Demo Mode). This means the database is reset periodically as serverless functions sleep. This is ideal for portfolios or demonstrations. 
 
 ---
 
